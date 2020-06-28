@@ -1,39 +1,72 @@
 package models
 
 import (
-	"fmt"
+	_ "fmt"
 	_ "github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"gobeetestpro/utils"
+
+	_ "gobeetestpro/utils"
+	//uuid "github.com/satori/go.uuid"
+	"time"
 )
 
-type User struct {
-	Id int
-	Name string
-	Age int
-}
-
-func init()  {
+func init() {
 	orm.RegisterModel(new(User))
 }
 
-func GetUser() User{
-	o:=orm.NewOrm()
-	user := User{Id: 1}
-	err := o.Read(&user)
-	if err == orm.ErrNoRows {
-    fmt.Println("查询不到")
-	} else if err == orm.ErrMissPK {
-		fmt.Println("找不到主键")
-	} else {
-		fmt.Println(user)
-	}
-	return user
+type User struct {
+	Id   int    `json:"user_id"`
+	Name string `json:"name"`
+	/** 返回的数据中移除密码字段 `json:"-"`.*/
+	Password   string `json:"-"`
+	Status     int    `json:"status"`
+	CreateTime int64  `json:"create_time"`
+	Phone      string `json:"phone"`
+	Avatar     string `json:"avatar"`
+	Useruuid   string `json:"user_uuid"`
 }
 
-func Updateuser()  {
-	u := User{Id: 1,Name: "王立强", Age: 102}
+type JwtToken struct {
+	Token string `json:"token"`
+}
+
+/* 判断是否已经注册 */
+func IsUserMobile(phone string) bool {
 	o := orm.NewOrm()
-	o.Update(&u)
-	fmt.Println("更新成功")
+	user := User{Phone: phone}
+	err := o.Read(&user, "Phone")
+	if err == orm.ErrNoRows {
+		return false
+	} else if err == orm.ErrMissPK {
+		return false
+	}
+	return true
+}
+
+/* 存储用户注册信息 */
+func SaveUserInfo(phone string, password string) error {
+
+	o := orm.NewOrm()
+	var user User
+	uuid, err := utils.GetUUID()
+	if err == nil {
+		user.Useruuid = uuid
+	}
+	user.Name = ""
+	user.Password = password
+	user.Phone = phone
+	user.Status = 1
+	user.CreateTime = time.Now().Unix()
+	_, err = o.Insert(&user)
+	return err
+}
+
+/* 查找用户信息 */
+func FindByUserInfo(phone string) User {
+	o := orm.NewOrm()
+	user := User{}
+	o.QueryTable("user").Filter("phone", phone).One(&user)
+	return user
 }
