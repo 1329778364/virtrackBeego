@@ -98,7 +98,6 @@ func GenerateToken(expiredSeconds int) (tokenString string) {
 		fmt.Println("generate json web token failed !! error :", err)
 	}
 	return tokenStr
-
 }
 
 // return this result to client then all later request should have header "Authorization: Bearer <token> "

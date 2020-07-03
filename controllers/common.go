@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"fmt"
 	"github.com/astaxie/beego"
 	"golang.org/x/crypto/bcrypt"
@@ -27,13 +25,6 @@ func RequestResponse(code int, msg interface{}, data interface{}) (json *JsonStr
 	}
 	json = &JsonStruct{Code: code, Msg: msg, Data: data}
 	return
-}
-
-/* MD5加密 */
-func MD5V(password string) string {
-	h := md5.New()
-	h.Write([]byte(password + beego.AppConfig.String("md5code")))
-	return hex.EncodeToString(h.Sum(nil))
 }
 
 // 加密密码

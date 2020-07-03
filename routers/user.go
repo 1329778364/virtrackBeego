@@ -16,7 +16,7 @@ func init() {
 			//CRUD Create(创建)、Read(读取)、Update(更新)和Delete(删除)
 			beego.NSBefore(func(ctx *context.Context) { //curd之前的验证token
 				split := strings.Split(ctx.Request.RequestURI, "?")
-				if split[0] != "/v1/user/login" {
+				if split[0] == "/v1/user/uploadcontactlist" {
 					token := ctx.Request.Header.Get("token") //获取前端提交过来的token 参数和前端进行约定
 					fmt.Print(token)
 					if token == "" {
@@ -25,12 +25,15 @@ func init() {
 					}
 					err := auth.ValidateToken(token)
 					if err != nil {
-						//fmt.Print("token验证失败")
+						fmt.Print("token验证失败")
 						//ctx.WriteString(auth.GenSimpleRespString(0,"token验证失败"))
 					}
 				}
 			}),
+
 			beego.NSNamespace("/user",
+				//beego.InsertFilter("/uploadcontactlist", beego.BeforeRouter)
+
 				beego.NSRouter("/login", &user.UserController{}, "*:Login"),
 				beego.NSRouter("/register", &user.UserController{}, "*:Register"),
 				beego.NSRouter("/uploadcontactlist", &user.UserController{}, "*:UploadContactList"),
