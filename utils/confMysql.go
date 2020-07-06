@@ -1,4 +1,4 @@
-package models
+package utils
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 /*
  全局初始化
 */
-func init()  {
+func MysqlClient() {
 	driverName := beego.AppConfig.String("driverName")
 	orm.RegisterDriver(driverName, orm.DRMySQL)
 

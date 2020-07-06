@@ -19,12 +19,14 @@ type JsonStruct struct {
 }
 
 /* 请求结果封装返回. */
-func RequestResponse(code int, msg interface{}, data interface{}) (json *JsonStruct) {
+func (c *CommonController) RequestResponse(code int, msg string, data interface{}) {
 	if data == nil {
 		data = []string{}
 	}
-	json = &JsonStruct{Code: code, Msg: msg, Data: data}
-	return
+	json := &JsonStruct{Code: code, Msg: msg, Data: data}
+	c.Data["json"] = json
+	c.ServeJSON()
+	c.StopRun()
 }
 
 // 加密密码
@@ -40,10 +42,10 @@ func Crypto(password string) string {
 func ValidatePassword(password string, truepwd string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(truepwd))
 	if err != nil {
-		fmt.Println("pw wrong")
+		fmt.Println("password wrong")
 		return false
 	} else {
-		fmt.Println("pw ok")
+		fmt.Println("password ok")
 		return true
 	}
 }

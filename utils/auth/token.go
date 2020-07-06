@@ -3,6 +3,7 @@ package auth
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"gobeetestpro/models"
 	"time"
 )
 
@@ -12,8 +13,8 @@ const (
 )
 
 type User struct {
-	Id   string `json:"id"`
-	Name string `json:"json"`
+	Id    int64  `json:"id"`
+	Phone string `json:"phone"`
 }
 
 // JWT -- json web token
@@ -43,7 +44,8 @@ func RefreshToken(tokenString string) (string, error) {
 		claims.User,
 		jwt.StandardClaims{
 			ExpiresAt: expireAt,
-			Issuer:    claims.User.Name,
+			Issuer:    "www.hust.cloud",
+			Subject:   "user token",
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
@@ -57,24 +59,7 @@ func RefreshToken(tokenString string) (string, error) {
 	return tokenStr, err
 }
 
-func ValidateToken(tokenString string) error {
-	token, err := jwt.ParseWithClaims(
-		tokenString,
-		&MyCustomClaims{},
-		func(token *jwt.Token) (interface{}, error) {
-			return []byte(KEY), nil
-		})
-	if claims, ok := token.Claims.(*MyCustomClaims); ok && token.Valid {
-		fmt.Printf("%v %v", claims.User, claims.StandardClaims.ExpiresAt)
-		fmt.Println("token will be expired at ", time.Unix(claims.StandardClaims.ExpiresAt, 0))
-	} else {
-		fmt.Println("validate tokenString failed !!!", err)
-		return err
-	}
-	return nil
-}
-
-func GenerateToken(expiredSeconds int) (tokenString string) {
+func GenerateToken(expiredSeconds int, user models.User) (tokenString string) {
 	if expiredSeconds == 0 {
 		expiredSeconds = DEFAULT_EXPIRE_SECONDS
 	}
@@ -83,12 +68,14 @@ func GenerateToken(expiredSeconds int) (tokenString string) {
 	expireAt := time.Now().Add(time.Second * time.Duration(expiredSeconds)).Unix()
 	fmt.Println("token will be expired at ", time.Unix(expireAt, 0))
 	// pass parameter to this func or not
-	user := User{"007", "Kev"}
+
+	userclaim := User{user.Id, user.Phone}
 	claims := MyCustomClaims{
-		user,
+		userclaim,
 		jwt.StandardClaims{
 			ExpiresAt: expireAt,
-			Issuer:    user.Name,
+			Issuer:    "www.hust.cloud",
+			Subject:   "user_token",
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
@@ -98,6 +85,23 @@ func GenerateToken(expiredSeconds int) (tokenString string) {
 		fmt.Println("generate json web token failed !! error :", err)
 	}
 	return tokenStr
+}
+
+func ValidateToken(tokenString string) (*MyCustomClaims, error) {
+	token, err := jwt.ParseWithClaims(
+		tokenString,
+		&MyCustomClaims{},
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(KEY), nil
+		})
+	claims, ok := token.Claims.(*MyCustomClaims)
+	if ok && token.Valid {
+		fmt.Println("token will be expired at ", time.Unix(claims.StandardClaims.ExpiresAt, 0))
+	} else {
+		fmt.Println("validate tokenString failed !!!", err)
+		return claims, err
+	}
+	return claims, nil
 }
 
 // return this result to client then all later request should have header "Authorization: Bearer <token> "

@@ -17,14 +17,12 @@ func init() {
 }
 
 type User struct {
-	Id   int    `json:"user_id"`
-	Name string `json:"name"`
+	Id    int64  `json:"id"`
+	Phone string `json:"phone"`
 	/** 返回的数据中移除密码字段 `json:"-"`.*/
 	Password   string `json:"-"`
 	Status     int    `json:"status"`
 	CreateTime int64  `json:"create_time"`
-	Phone      string `json:"phone"`
-	Avatar     string `json:"avatar"`
 	Useruuid   string `json:"user_uuid"`
 }
 
@@ -47,19 +45,14 @@ func IsUserMobile(phone string) bool {
 
 /* 存储用户注册信息 */
 func SaveUserInfo(phone string, password string) error {
-
 	o := orm.NewOrm()
 	var user User
-	uuid, err := utils.GetUUID()
-	if err == nil {
-		user.Useruuid = uuid
-	}
-	user.Name = ""
+	user.Useruuid = utils.GetUUID(phone)
 	user.Password = password
 	user.Phone = phone
 	user.Status = 1
 	user.CreateTime = time.Now().Unix()
-	_, err = o.Insert(&user)
+	_, err := o.Insert(&user)
 	return err
 }
 
