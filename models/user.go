@@ -1,26 +1,21 @@
 package models
 
 import (
-	_ "fmt"
-	_ "github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	_ "github.com/go-sql-driver/mysql"
 	"gobeetestpro/utils"
-
-	_ "gobeetestpro/utils"
-	//uuid "github.com/satori/go.uuid"
 	"time"
 )
 
 func init() {
+	/* 注册 orm对应的数据库 表 */
 	orm.RegisterModel(new(User))
 }
 
 type User struct {
 	Id    int64  `json:"id"`
-	Phone string `json:"phone"`
+	Phone string `alias:"手机号" json:"phone" valid:"Required;Phone;Unique"`
 	/** 返回的数据中移除密码字段 `json:"-"`.*/
-	Password   string `json:"-"`
+	Password   string `alias:"密码" json:"password" valid:"Required;MinSize(6);MaxSize(16)"`
 	Status     int    `json:"status"`
 	CreateTime int64  `json:"create_time"`
 	Useruuid   string `json:"user_uuid"`

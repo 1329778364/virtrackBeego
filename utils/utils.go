@@ -8,8 +8,8 @@ import (
 
 /*-----------获取UUID--------------------*/
 func GetUUID(phone string) string {
-	uuid := uuid.NewV5(uuid.NamespaceDNS, phone)
-	return uuid.String()
+	newV5 := uuid.NewV5(uuid.NamespaceDNS, phone)
+	return newV5.String()
 }
 
 //func ShowSuccess(this *user.UserController) (interface{}, interface{}) {

@@ -13,13 +13,14 @@ import (
 func init() {
 	ns :=
 		beego.NewNamespace("/v1",
-			//CRUD Create(创建)、Read(读取)、Update(更新)和Delete(删除)
 
 			beego.NSNamespace("/user",
 				beego.NSRouter("/login", &user.UserController{}, "*:Login"),
 				beego.NSRouter("/logout", &user.UserController{}, "*:Logout"),
 				beego.NSRouter("/register", &user.UserController{}, "*:Register"),
 				beego.NSRouter("/uploadcontactlist", &user.UserController{}, "*:UploadContactList"),
+				beego.NSRouter("/getCaptcha", &user.CaptchaController{}, "*:Get"),
+				beego.NSRouter("/verifyCaptcha", &user.CaptchaController{}, "*:Post"),
 			),
 		)
 	beego.InsertFilter("/v1/user/uploadcontactlist", beego.BeforeRouter, TokenFilter)
