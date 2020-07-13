@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="fb6534ed-076a-4c89-81c0-068a96fae3ac" name="beegotestpro" url="">
+        <fileTransfer rootFolder="/root" accessType="SFTP" host="182.61.49.168" port="22" sshConfigId="02fddb97-0e05-4397-8e14-291b3da06698" sshConfig="root@182.61.49.168:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

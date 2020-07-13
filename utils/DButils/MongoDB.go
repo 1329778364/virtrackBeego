@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/astaxie/beego"
-	"go.mongodb.org/mongo-driver/mongo"
+	. "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 )
 
 var (
-	database *mongo.Database
+	database *Database
 )
 
 func init() {
@@ -25,7 +25,7 @@ func init() {
 	clientOptions := options.Client().ApplyURI(url)
 
 	// Connect to MongoDB
-	client, err := mongo.Connect(context.TODO(), clientOptions)
+	client, err := Connect(context.TODO(), clientOptions)
 
 	database = client.Database(monogoDb)
 
@@ -46,6 +46,15 @@ func init() {
 /*
 	获取数据库中的集合 根据集合的名字
 */
-func GetMongoCollection(collection string) *mongo.Collection {
+
+func GetMongoCollection(collection string) *Collection {
 	return database.Collection(collection)
+}
+
+func DisConnectCient(client Client) {
+	err := client.Disconnect(context.TODO())
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Connection to MongoDB closed.")
 }
