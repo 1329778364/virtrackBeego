@@ -10,7 +10,7 @@ import (
 /*
  全局初始化
 */
-func MysqlClient() {
+func init() {
 	driverName := beego.AppConfig.String("driverName")
 	orm.RegisterDriver(driverName, orm.DRMySQL)
 

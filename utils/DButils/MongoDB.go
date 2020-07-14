@@ -14,13 +14,13 @@ var (
 )
 
 func init() {
-	mongoUsername := beego.AppConfig.String("mongo_username")
-	mongoPassword := beego.AppConfig.String("mongo_pwd")
+	//mongoUsername := beego.AppConfig.String("mongo_username")
+	//mongoPassword := beego.AppConfig.String("mongo_pwd")
 	mongoHost := beego.AppConfig.String("mongo_host")
 	mongoPort := beego.AppConfig.String("mongo_port")
 	monogoDb := beego.AppConfig.String("monogo_db")
 
-	url := "mongodb://" + mongoUsername + ":" + mongoPassword + "@" + mongoHost + ":" + mongoPort + "/?authSource=admin"
+	url := "mongodb://" + mongoHost + ":" + mongoPort
 
 	clientOptions := options.Client().ApplyURI(url)
 

@@ -3,12 +3,10 @@ package main
 import (
 	"github.com/astaxie/beego"
 	_ "gobeetestpro/routers"
-	"gobeetestpro/utils/DButils"
 )
 
 func init() {
-	DButils.MysqlClient()
-	//utils.RedisClient()
+
 }
 
 func main() {
